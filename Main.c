@@ -2,10 +2,9 @@
 #include <stdio.h>
 #include "process_struct.h"
 
-
 /*Global Variables  */
 int INIT_TIME = 0;
-int FIN_TIME;
+int FIN_TIME = 1000;
 int ARRIVE_MIN;
 int ARRIVE_MAX;
 int QUIT_PROB;
