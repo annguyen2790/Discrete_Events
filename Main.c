@@ -48,8 +48,6 @@ Job * delete_head(Queue * q){ /*Return reference to to head Job that popped*/
   Job * holder = malloc(sizeof(Job));
   holder = q->head;
   q->head = holder->nextPtr;
-
-  free(holder);
   
   return holder;
     
@@ -75,5 +73,6 @@ int main(void){
   insert_queue(q, 3, 4, 5);
   int check = isEmpty(q);
   Job * thrown = delete_head(q);
+  printf("%d", thrown->ID );
   print_queue(q);
 }
