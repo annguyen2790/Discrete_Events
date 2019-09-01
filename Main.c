@@ -54,9 +54,14 @@ void print_queue(Queue *  q){ /*This methof is just used to test if queue is wor
   printf("NULL\n");
   
 }
+int isEmpty(Queue * q){ /*This method checks if the queue is empty; 1 for yes and 0 for no */
+  return q->head == NULL;
+}
 int main(void){
   Queue * q = init_queue();
   insert_queue(q, 1, 2, 3);
   insert_queue(q, 3, 4, 5);
+  int check = isEmpty(q);
   print_queue(q);
+  printf("%d", check);
 }
