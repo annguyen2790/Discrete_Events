@@ -17,11 +17,8 @@ int DISK2_MAX;
 
 /*END OF GLOBAL VARIABLES */
 
-/*Global pointer to start and end of the queue*/
-struct Job * head = NULL;
-struct Job * tail = NULL;
 
-Queue * init_queue(){
+Queue * init_queue(){ /*Create a queuse / pointer to Queue struct */
   Queue * s_queue = (Queue *) malloc( sizeof(Queue));
   s_queue ->size = 0;
   s_queue ->head = NULL;
@@ -29,7 +26,7 @@ Queue * init_queue(){
   return s_queue;
 }
 
-void insert_queue(Queue * q, int job_ID, int job_state, int job_time){
+void insert_queue(Queue * q, int job_ID, int job_state, int job_time){ /*This method insert a Job at the tail of the queue*/
   Job * temp = malloc(sizeof(Job));
   temp->ID = job_ID;
   temp->state = job_state;
@@ -45,12 +42,12 @@ void insert_queue(Queue * q, int job_ID, int job_state, int job_time){
   q->tail = temp;
   
 }
-void print_queue(Queue *  q){
+void print_queue(Queue *  q){ /*This methof is just used to test if queue is working*/
   Job * temp = q->head;
   while(temp != NULL){
-    printf("%d", temp->ID);
-    printf("%d", temp->state);
-    printf("%d", temp->time);
+    printf("ID:%d ", temp->ID);
+    printf("State:%d ", temp->state);
+    printf("Time:%d", temp->time);
     printf("---->");
     temp = temp->nextPtr;
   }
