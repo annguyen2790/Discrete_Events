@@ -14,7 +14,6 @@ int DISK1_MIN;
 int DISK1_MAX;
 int DISK2_MIN;
 int DISK2_MAX;
-
 /*END OF GLOBAL VARIABLES */
 
 
@@ -42,6 +41,19 @@ void insert_queue(Queue * q, int job_ID, int job_state, int job_time){ /*This me
   q->tail = temp;
   
 }
+Job * delete_head(Queue * q){ /*Return reference to to head Job that popped*/
+  if(isEmpty(q)){
+      return NULL;
+  }
+  Job * holder = malloc(sizeof(Job));
+  holder = q->head;
+  q->head = holder->nextPtr;
+
+  free(holder);
+  
+  return holder;
+    
+}
 void print_queue(Queue *  q){ /*This methof is just used to test if queue is working*/
   Job * temp = q->head;
   while(temp != NULL){
@@ -62,6 +74,6 @@ int main(void){
   insert_queue(q, 1, 2, 3);
   insert_queue(q, 3, 4, 5);
   int check = isEmpty(q);
+  Job * thrown = delete_head(q);
   print_queue(q);
-  printf("%d", check);
 }
