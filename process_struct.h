@@ -15,3 +15,5 @@ Queue * init_queue();
 void insert_queue(Queue * q, int job_ID, int job_state, int job_time);
 void printQueue(Queue * q);
 int isEmpty(Queue *q);
+Job * delete_head(Queue * q);
+
