@@ -1,11 +1,16 @@
-
-#define inCPUqueue 1
-#define inCPUexecute 2
-#define FINISHED 3
-
-struct Job{
+typedef struct Job{
   int ID;
-  int current_state;
+  int state;
   int time;
-};
+  struct Job * nextPtr;
+} Job;
+
+typedef struct Queue{
+  struct Job * head;
+  struct Job * tail;
+  int size;
+}Queue;
   
+Queue * init_queue();
+void insert_queue(Queue * q, int job_ID, int job_state, int job_time);
+void printQueue(Queue * q);

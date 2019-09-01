@@ -16,6 +16,50 @@ int DISK2_MIN;
 int DISK2_MAX;
 
 /*END OF GLOBAL VARIABLES */
+
+/*Global pointer to start and end of the queue*/
+struct Job * head = NULL;
+struct Job * tail = NULL;
+
+Queue * init_queue(){
+  Queue * s_queue = (Queue *) malloc( sizeof(Queue));
+  s_queue ->size = 0;
+  s_queue ->head = NULL;
+  s_queue ->tail = NULL;
+  return s_queue;
+}
+
+void insert_queue(Queue * q, int job_ID, int job_state, int job_time){
+  Job * temp = malloc(sizeof(Job));
+  temp->ID = job_ID;
+  temp->state = job_state;
+  temp->time = job_time;
+  temp->nextPtr = NULL;
+  
+  if(q->head == NULL){
+    q->head = temp;
+  }else{
+    q->tail->nextPtr = temp;
+  }
+
+  q->tail = temp;
+  
+}
+void print_queue(Queue *  q){
+  Job * temp = q->head;
+  while(temp != NULL){
+    printf("%d", temp->ID);
+    printf("%d", temp->state);
+    printf("%d", temp->time);
+    printf("---->");
+    temp = temp->nextPtr;
+  }
+  printf("NULL\n");
+  
+}
 int main(void){
-  puts("Hello World");
+  Queue * q = init_queue();
+  insert_queue(q, 1, 2, 3);
+  insert_queue(q, 3, 4, 5);
+  print_queue(q);
 }
