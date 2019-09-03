@@ -24,7 +24,7 @@ Queue * init_queue(){ /*Create a queuse / pointer to Queue struct */
   s_queue ->tail = NULL;
   return s_queue;
 }
-void insert_Pqueue(Queue * q, int job_ID, int job_state, int job_time){
+void insert_Pqueue(Queue * q, int job_ID, int job_state, int job_time){ /*This method insert Job in a queue with a priority based on the time of the job*/
   Job * temp = malloc(sizeof(Job));
   Job * temp2 = NULL;
   temp->ID = job_ID;
@@ -87,9 +87,11 @@ int isEmpty(Queue * q){ /*This method checks if the queue is empty; 1 for yes an
 }
 int main(void){
   Queue * q = init_queue();
-  insert_queue(q, 1, 2, 3);
-  insert_queue(q, 3, 4, 5);
-  insert_Pqueue(q, 6,7, 1);
-  insert_Pqueue(q, 8,9, 2);
+  insert_queue(q, 1, 1, 3);
+  insert_queue(q, 1, 1, 5);
+  insert_Pqueue(q, 1,1, 1);
+  insert_Pqueue(q, 1,1, 2);
+  insert_Pqueue(q, 1, 1, 4);
+  insert_Pqueue(q, 1, 1, 0);
   print_queue(q);
 }
