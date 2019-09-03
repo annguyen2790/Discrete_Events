@@ -41,6 +41,7 @@ void insert_Pqueue(Queue * q, int job_ID, int job_state, int job_time){ /*This m
     temp->nextPtr = temp2->nextPtr;
     temp2->nextPtr = temp;
   }
+  q->size = q->size + 1;
   
 }
 void insert_queue(Queue * q, int job_ID, int job_state, int job_time){ /*This method insert a Job at the tail of the queue*/
@@ -57,7 +58,7 @@ void insert_queue(Queue * q, int job_ID, int job_state, int job_time){ /*This me
   }
 
   q->tail = temp;
-  
+  q->size++;
 }
 Job * delete_head(Queue * q){ /*Return reference to to head Job that popped*/
   if(isEmpty(q)){
@@ -66,7 +67,7 @@ Job * delete_head(Queue * q){ /*Return reference to to head Job that popped*/
   Job * holder = malloc(sizeof(Job));
   holder = q->head;
   q->head = holder->nextPtr;
-  
+  q->size--;
   return holder;
     
 }
@@ -79,7 +80,9 @@ void print_queue(Queue *  q){ /*This methof is just used to test if queue is wor
     printf("---->");
     temp = temp->nextPtr;
   }
+ 
   printf("NULL\n");
+  printf("Size: %d\n", q->size);
   
 }
 int isEmpty(Queue * q){ /*This method checks if the queue is empty; 1 for yes and 0 for no */
