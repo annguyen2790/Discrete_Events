@@ -90,5 +90,6 @@ int main(void){
   insert_queue(q, 1, 2, 3);
   insert_queue(q, 3, 4, 5);
   insert_Pqueue(q, 6,7, 1);
+  insert_Pqueue(q, 8,9, 2);
   print_queue(q);
 }
