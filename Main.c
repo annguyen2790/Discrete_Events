@@ -24,7 +24,25 @@ Queue * init_queue(){ /*Create a queuse / pointer to Queue struct */
   s_queue ->tail = NULL;
   return s_queue;
 }
-
+void insert_Pqueue(Queue * q, int job_ID, int job_state, int job_time){
+  Job * temp = malloc(sizeof(Job));
+  Job * temp2 = NULL;
+  temp->ID = job_ID;
+  temp->state = job_state;
+  temp->time = job_time;
+  if(q -> head == NULL ||temp->time  <  q->head->time){
+    temp->nextPtr = q->head;
+    q->head = temp;   
+  }else{
+    temp2 = q->head;
+    while(temp2->nextPtr != NULL && temp2->nextPtr->time <= job_time){
+      temp2 = temp2->nextPtr;
+    }
+    temp->nextPtr = temp2->nextPtr;
+    temp2->nextPtr = temp;
+  }
+  
+}
 void insert_queue(Queue * q, int job_ID, int job_state, int job_time){ /*This method insert a Job at the tail of the queue*/
   Job * temp = malloc(sizeof(Job));
   temp->ID = job_ID;
@@ -71,8 +89,6 @@ int main(void){
   Queue * q = init_queue();
   insert_queue(q, 1, 2, 3);
   insert_queue(q, 3, 4, 5);
-  int check = isEmpty(q);
-  Job * thrown = delete_head(q);
-  printf("%d", thrown->ID );
+  insert_Pqueue(q, 6,7, 1);
   print_queue(q);
 }
