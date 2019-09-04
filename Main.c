@@ -89,6 +89,7 @@ int isEmpty(Queue * q){ /*This method checks if the queue is empty; 1 for yes an
   return q->head == NULL && q->size == 0;
 }
 void destroy_queue(Queue * q){
+  q->size = 0;
   free(q);
 }
 int main(void){
