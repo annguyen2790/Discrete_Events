@@ -86,7 +86,10 @@ void print_queue(Queue *  q){ /*This methof is just used to test if queue is wor
   
 }
 int isEmpty(Queue * q){ /*This method checks if the queue is empty; 1 for yes and 0 for no */
-  return q->head == NULL;
+  return q->head == NULL && q->size == 0;
+}
+void destroy_queue(Queue * q){
+  free(q);
 }
 int main(void){
   Queue * q = init_queue();
@@ -96,5 +99,7 @@ int main(void){
   insert_Pqueue(q, 1,1, 2);
   insert_Pqueue(q, 1, 1, 4);
   insert_Pqueue(q, 1, 1, 0);
+  print_queue(q);
+  destroy_queue(q);
   print_queue(q);
 }
