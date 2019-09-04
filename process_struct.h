@@ -17,3 +17,4 @@ void printQueue(Queue * q);
 int isEmpty(Queue *q);
 Job * delete_head(Queue * q);
 void insert_Pqueue(Queue * q, int job_ID, int job_state, int job_time);
+void destroy_queue(Queue * q);
