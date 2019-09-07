@@ -8,7 +8,7 @@ int FIN_TIME = 1000;
 int ARRIVE_MIN;
 int ARRIVE_MAX;
 int QUIT_PROB;
-int CPU_MIN;
+int CPU_MIN = 0;
 int CPU_MAX;
 int DISK1_MIN;
 int DISK1_MAX;
@@ -16,6 +16,23 @@ int DISK2_MIN;
 int DISK2_MAX;
 /*END OF GLOBAL VARIABLES */
 
+/*Open/Close state of CPU, DISK 1, and DISK 2
+At the beginning of the program, all are opened  */
+int CPU_OPEN = 1;
+int DISK_1_OPEN = 1;
+int DIS_2_OPEN = 1
+
+
+//State of jobs
+
+
+int stimulation_ended = 0;
+int entered_disk_1 =  1;
+int entered_disk_2 = 2;
+int exit_disk_1 = 3;
+int exit_disk_2 = 4;
+int entered_CPU = 5;
+int exit_CPU = 6;
 
 Queue * init_queue(){ /*Create a queuse / pointer to Queue struct */
   Queue * s_queue = (Queue *) malloc( sizeof(Queue));
@@ -26,7 +43,7 @@ Queue * init_queue(){ /*Create a queuse / pointer to Queue struct */
 }
 void insert_Pqueue(Queue * q, int job_ID, int job_state, int job_time){ /*This method insert Job in a queue with a priority based on the time of the job*/
   Job * temp = malloc(sizeof(Job));
-  Job * temp2 = NULL;
+  Job * temp2 = malloc(sizeof(Job));
   temp->ID = job_ID;
   temp->state = job_state;
   temp->time = job_time;
@@ -41,7 +58,7 @@ void insert_Pqueue(Queue * q, int job_ID, int job_state, int job_time){ /*This m
     temp->nextPtr = temp2->nextPtr;
     temp2->nextPtr = temp;
   }
-  q->size = q->size + 1;
+  q->size++;
   
 }
 void insert_queue(Queue * q, int job_ID, int job_state, int job_time){ /*This method insert a Job at the tail of the queue*/
@@ -71,6 +88,7 @@ Job * delete_head(Queue * q){ /*Return reference to to head Job that popped*/
   return holder;
     
 }
+
 void print_queue(Queue *  q){ /*This methof is just used to test if queue is working*/
   Job * temp = q->head;
   while(temp != NULL){
@@ -92,15 +110,13 @@ void destroy_queue(Queue * q){
   q->size = 0;
   free(q);
 }
+//arrival, cpu_enter, cpu_finished, process_exit, disk1_start, disk1_end, disk2_start, disk2_end, ending
 int main(void){
-  Queue * q = init_queue();
-  insert_queue(q, 1, 1, 3);
-  insert_queue(q, 1, 1, 5);
-  insert_Pqueue(q, 1,1, 1);
-  insert_Pqueue(q, 1,1, 2);
-  insert_Pqueue(q, 1, 1, 4);
-  insert_Pqueue(q, 1, 1, 0);
-  print_queue(q);
-  destroy_queue(q);
-  print_queue(q);
+
+  //Create Four Main Queues Data Structures 
+  Queue * CPU_queue = init_queue();
+  Queue * DISK_1_queue = init_queue();
+  Queue * DISK_2_queue = init_queue();
+  Quese * EventQueue = init_queue();
+  
 }
