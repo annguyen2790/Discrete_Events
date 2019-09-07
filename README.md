@@ -1,10 +1,3 @@
-#Discrete Event
-9/1/2019
-Basic Plan:
-A)Create a queue ---> add/delete Job from queue
-B)Create a prioprity queue -----> add Job to queue
-C) Some logics to stimulate the events of the CPU
-In order to stimulate a cpu event scheduling process, two types of data structure will be needed: a queue and priority queue
-1. Implement a basic queue and its common method: insert_queue, pop, isEmpty
-9/3/2019
-2. Implement insert_Pqueue, which acts as an insertion of priority queue based on time of the job
+#Discrete events:
+
+This program stimulate the process of how a CPU handles events(jobs) when there are many events running at the same time between the CPU and disk                                            Basic: Jobs will be filled inside the CPU queue, if the CPU is opened, the those jobs will be processed. Otherwise, there will be an event handlers that will place he jobs in either disk1 or disk2 queue, quit, or even exit the CPU  based on the state of the jobs 
