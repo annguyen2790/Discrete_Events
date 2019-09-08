@@ -17,6 +17,8 @@ int exit_disk_1 = 3;
 int exit_disk_2 = 4;
 int entered_CPU = 5;
 int exit_CPU = 6;
+int arrival = 7;
+int quit = 8;
 
 Queue * init_queue(){ /*Create a queuse / pointer to Queue struct */
   Queue * s_queue = (Queue *) malloc( sizeof(Queue));
@@ -128,6 +130,18 @@ Job * create_job(int job_id, int job_state, int job_time){
   temp->time = job_time;
   return temp;
 }
+
+int get_random(int high, int low){ //get a random in-between high and low range
+  return ( rand() % (high - low + 1)) + low;
+}
+void enter_disk(Queue * disk_queue, Queue * event_queue, int disk, int time){
+  Job * toGo = delete_head(disk_queue);
+  insert_Pqueue(event_queue, toGo);
+  if(disk == 1){
+    DISK_1_OPEN = 0;
+  }
+  
+}
  int main(void){
    //Read in the inputs from the inputs.txt
   float SEED  = read_inputs("inputs.txt", "SEED"); 
@@ -146,19 +160,35 @@ Job * create_job(int job_id, int job_state, int job_time){
   Queue * CPU_queue = init_queue();
   Queue * DISK_1_queue = init_queue();
   Queue * DISK_2_queue = init_queue();
-  Queue * EventQueue = init_queue();
+  Queue * EVENTS_queue = init_queue();
+
+  //Set the start condition
+  srand(SEED);// randomize
+  int ID = 1;
+  int arrival_time = INIT_TIME;
+  int current_time = INIT_TIME + get_random(ARRIVE_MAX, ARRIVE_MIN);
+  Job * job1 = create_job(ID, 5, INIT_TIME); //5 since everything must start at CPU Queue
+  insert_queue(CPU_queue, job1);
+
+
+  while(current_time != FIN_TIME) == 0){
+    
+      Job * new_job = create_job(++ID, 5, current_time);
+      insert_queue(CPU_queue, new_job);
+      arrival_time = current_time + get_random(ARRIVE_MAX, ARRIVE_MIN); //randomize the arrival time again for next job
+      
+    
+      current_time++;
+    
+  }
+  print_queue(CPU_queue);
+  
+  //print_queue(CPU_queue);
   /*
 ``1. Create the first job
   2. Add a job into the event Queue
   3. 
-   */
-  Job * job1 = create_job(1,1,0);
-  Job * job2 = create_job(1,1,2);
-  Job * job3 = create_job(1,1,3);
-  Job * job4 = create_job(1,1,4);
-  insert_queue(EventQueue, job1);
-  insert_Pqueue(EventQueue, job4);
-  insert_Pqueue(EventQueue, job3);
-  insert_Pqueue(EventQueue, job2);
-  print_queue(EventQueue);
+   */  
+  
+  
 }
