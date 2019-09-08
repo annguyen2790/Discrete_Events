@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "process_struct.h"
 #include <string.h>
+//Use for testing only!
 float SEED  = 3; 
 float INIT_TIME = 0;
 float FIN_TIME = 1000;
@@ -20,6 +21,7 @@ At the beginning of the program, all are opened  */
 int CPU_OPEN = 1;
 int DISK_1_OPEN = 1;
 int DISK_2_OPEN = 1;
+
 
 //State of jobs
 int stimulation_ended = 0;
@@ -59,7 +61,7 @@ void insert_Pqueue(Queue * q, Job * event){ /*This method insert Job in a queue 
     temp->nextPtr = temp2->nextPtr;
     temp2->nextPtr = temp;
   }
-  q->size++;
+  
   
 }
 void insert_queue(Queue * q, Job * event){ /*This method insert a Job at the tail of the queue*/
@@ -152,17 +154,29 @@ int get_random(int high, int low){ //get a random in-between high and low range
 void enter_disk(Queue * disk_queue, Queue * event_queue, int disk, int time){
   
   Job * toGo = delete_head(disk_queue);
-  insert_Pqueue(event_queue, toGo);
-  if(disk == 1){
-    DISK_1_OPEN = 0;
-    int time_at = time + get_random(DISK1_MAX, DISK1_MIN); //the time the job enter disk
-  }
-  if(disk == 2){
-    DISK_2_OPEN = 0;
-    int time_at = time + get_random(DISK2_MAX, DISK2_MIN); //the time the job enter disk
-  }
   
+  if(disk == 1){ //in DISK 1
+    int time_at = time + get_random(DISK1_MAX, DISK1_MIN); //the time the job enter disk
+    if(time_at < FIN_TIME){
+      toGo->state = 1;
+      toGo->time = time_at;
+      DISK_1_OPEN = 0;
+      printf("Job%d arrive in disk1 at %d and leave at %d\n", toGo->ID, time,time_at);
+    }
+    
+  }
+  if(disk == 2){ //in DISK 2
+    int time_at = time + get_random(DISK2_MAX, DISK2_MIN); //the time the job enter disk
+    if(time_at < FIN_TIME){
+      toGo->state = 2;
+      toGo->time = time_at;
+      DISK_2_OPEN = 0;
+      printf("Job%d arrive in disk2 at %d and leave at %d\n", toGo->ID, time,time_at);
+    }
+  }
+  insert_Pqueue(event_queue, toGo);
 }
+
 void enter_CPU(Queue * event_queue, Job * toGo, int time){
   int time_at = time + get_random(CPU_MAX, CPU_MIN);
   if(time_at < FIN_TIME){
@@ -170,8 +184,51 @@ void enter_CPU(Queue * event_queue, Job * toGo, int time){
     toGo->state = 5;
     toGo->time = time;
     insert_Pqueue(event_queue, toGo);
-    
+    printf("Job%d arrive in CPU at %d and leave at %d\n", toGo->ID, time,time_at);
   }
+  insert_Pqueue(event_queue, toGo);
+}
+void handle_event(Job * jobs_in_events[], Queue * EVENTS_queue, Queue * DISK_1_queue, Queue * DISK_2_queue, Queue * CPU_queue, int job_amount, int current_time){
+  //declare quit probability
+  int quit_chance = get_random(10, 1);
+  int i ;
+  //for all jobs to be processed, switch case their state to determine what to do
+   while(i < job_amount){
+     if(jobs_in_events[i]->state == 0){
+       printf("Job%d ended simulation at time %d\n", jobs_in_events[i]->ID, jobs_in_events[i]->time );
+       printf("Job%d leave CPU at  %d time\n", jobs_in_events[i]->ID, jobs_in_events[i]->time );
+     }
+     if(quit <= QUIT_PROB * 20){
+       jobs_in_events[i] -> state = exit_CPU;
+
+       if(CPU_OPEN){ //when CPU queue is available
+	 Job * toGo = delete_head(CPU_queue); 
+	 enter_CPU(EVENTS_queue, toGo, current_time); //pop the top job right back to events queue
+       }
+
+     }
+   
+     if(jobs_in_events[i] -> state == 6 ){
+       if(DISK_2_queue -> size >= DISK_1_queue ->size){
+	 jobs_in_events[i] -> state = entered_disk_1;
+	 insert_queue(DISK_1_queue, jobs_in_events[i]);
+	 if(DISK_1_OPEN){
+	   enter_disk(DISK_1_queue, EVENTS_queue, entered_disk_1, current_time);
+	 }
+       }
+       if(DISK_2_queue -> size <= DISK_1_queue ->size){
+	 jobs_in_events[i] -> state = entered_disk_2;
+	 insert_queue(DISK_2_queue, jobs_in_events[i]);
+	 if(DISK_2_OPEN){
+	   enter_disk(DISK_2_queue, EVENTS_queue, entered_disk_2, current_time);
+	 }
+       }
+       CPU_OPEN = 1; 
+     }
+      
+    i++; 
+  }
+  
 }
  int main(void){
    //Read in the inputs from the inputs.txt
@@ -199,27 +256,43 @@ void enter_CPU(Queue * event_queue, Job * toGo, int time){
   int arrival_time = INIT_TIME;
   int current_time = INIT_TIME + get_random(ARRIVE_MAX, ARRIVE_MIN);
   Job * job1 = create_job(ID, 5, INIT_TIME); //5 since everything must start at CPU Queue
-  insert_queue(CPU_queue, job1);
+  insert_queue(CPU_queue, job1); //add job to CPU queue
 
 
   while(current_time != FIN_TIME){
     
+    if(arrival_time == current_time){
       Job * new_job = create_job(++ID, 5, current_time);
       insert_queue(CPU_queue, new_job);
       arrival_time = current_time + get_random(ARRIVE_MAX, ARRIVE_MIN); //randomize the arrival time again for next job
+    }  
+    
+    
+    //check if CPU Open then pop a job from CPU queue to event Queue
+     if(CPU_OPEN){
+       Job * toGo = delete_head(CPU_queue);
+       enter_CPU(EVENTS_queue, toGo, current_time);
+     }
+
+    //check the time of job at event queue then handle events according to state
+    if(current_time == EVENTS_queue->head->time){
       
-    
-      current_time++;
-    
+      //check how many jobs at event queue
+      size_t counter = 0;
+      Job * temp = EVENTS_queue->head;
+      while(temp->time == current_time){ //how many jobs are the same time 
+	counter = counter + 1;
+	temp = temp->nextPtr; 
+      }
+      //create an array of Jobs
+      Job * JOBS[counter];
+      //fill the array with jobs from event queue
+      for(int i = 0; i < counter; i++){
+	JOBS[i] = delete_head(EVENTS_queue);
+      }
+      //handle events accordig to state : 
+     }
+    current_time++;
   }
-  //print_queue(CPU_queue);
-  
-  //print_queue(CPU_queue);
-  /*
-``1. Create the first job
-  2. Add a job into the event Queue
-  3. 
-   */  
-  
-  
+  // print_queue(EVENTS_queue); 
 }
