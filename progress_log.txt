@@ -2,6 +2,10 @@
 +Implement a queue Data Structure
 +Implement insert_head, delete_head, print_queue functions
 +Implement destroy_queue and isEmpty methods
-9/4/2019 - Today
+9/4/2019 - 9/7/2019
 +Implement a read_input function which will take a text file and parse info according to the search string
 +Refactor event structure for better code readibility 
+9/8/2019 - Present
++Add enter_disk, and enter_cpu to move top job to event queue
++Start an event handling functions which place the jobs based on their state
++Failed Test (still debugging)
