@@ -12,9 +12,10 @@ typedef struct Queue{
 }Queue;
   
 Queue * init_queue();
-void insert_queue(Queue * q, int job_ID, int job_state, int job_time);
+void insert_queue(Queue * q, Job * event);
 void printQueue(Queue * q);
 int isEmpty(Queue *q);
 Job * delete_head(Queue * q);
-void insert_Pqueue(Queue * q, int job_ID, int job_state, int job_time);
+void insert_Pqueue(Queue * q, Job * event);
 void destroy_queue(Queue * q);
+float read_inputs(char * filename, char * string);
