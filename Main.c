@@ -113,30 +113,30 @@ void destroy_queue(Queue * q){
     
 //arrival, cpu_enter, cpu_finished, process_exit, disk1_start, disk1_end, disk2_start, disk2_end, ending
 
-float read_inputs(char *fname, char *string){ /*This method will read and search for value coresspond to the search string and return that value*/ 
-  FILE *fp;  
+float read_inputs(char *file_name, char *string){ /*This method will read and search for value coresspond to the search string and return that value*/ 
+  FILE *filePtr;  
   char temp[200];         
-  char valueString[200]; 
+  char string_holder[200]; 
   float value = 0;
   int i = 0;
   int j = 0;
     
-  if((fp = fopen(fname, "r")) == NULL){
+  if((filePtr = fopen(file_name, "r")) == NULL){
     return(0);
   }
-  while(fgets(temp,200, fp) != NULL){
+  while(fgets(temp,200, filePtr) != NULL){
     if((strstr(temp, string)) != NULL){
       for(i = strlen(string); i < strlen(temp) + 1; i++){ //convert number  after the space  the search string to the end null  into number
-	valueString[j] = temp[i];
+	string_holder[j] = temp[i];
 	j++;
       }
-      value = atof(valueString);
+      value = atof(string_holder);
       
             
     }
         
   }
-    
+  fclose(filePtr);
   return value;
     
 }
