@@ -2,12 +2,24 @@
 #include <stdio.h>
 #include "process_struct.h"
 #include <string.h>
-
+float SEED  = 3; 
+float INIT_TIME = 0;
+float FIN_TIME = 1000;
+float ARRIVE_MIN = 25;
+float ARRIVE_MAX = 125;
+float QUIT_PROB = 0.2;
+float CPU_MIN = 25;
+float CPU_MAX = 125;
+float DISK1_MIN = 25;
+float DISK1_MAX = 125;
+float DISK2_MIN = 35;
+float DISK2_MAX = 125;
+  
 /*Open/Close state of CPU, DISK 1, and DISK 2
 At the beginning of the program, all are opened  */
 int CPU_OPEN = 1;
 int DISK_1_OPEN = 1;
-int DIS_2_OPEN = 1;
+int DISK_2_OPEN = 1;
 
 //State of jobs
 int stimulation_ended = 0;
@@ -30,6 +42,7 @@ Queue * init_queue(){ /*Create a queuse / pointer to Queue struct */
 
 
 void insert_Pqueue(Queue * q, Job * event){ /*This method insert Job in a queue with a priority based on the time of the job*/
+  q->size++;
   Job * temp = malloc(sizeof(Job));
   Job * temp2 = malloc(sizeof(Job));
   temp->ID = event->ID;
@@ -50,6 +63,7 @@ void insert_Pqueue(Queue * q, Job * event){ /*This method insert Job in a queue 
   
 }
 void insert_queue(Queue * q, Job * event){ /*This method insert a Job at the tail of the queue*/
+  q->size++;
   Job * temp = malloc(sizeof(Job));
   temp->ID = event->ID;
   temp->state = event->state;
@@ -63,16 +77,17 @@ void insert_queue(Queue * q, Job * event){ /*This method insert a Job at the tai
   }
 
   q->tail = temp;
-  q->size++;
+  
 }
 Job * delete_head(Queue * q){ /*Return reference to to head Job that popped*/
   if(isEmpty(q)){
       return NULL;
   }
+  q->size--;
   Job * holder = malloc(sizeof(Job));
   holder = q->head;
   q->head = holder->nextPtr;
-  q->size--;
+  
   return holder;
     
 }
@@ -135,12 +150,28 @@ int get_random(int high, int low){ //get a random in-between high and low range
   return ( rand() % (high - low + 1)) + low;
 }
 void enter_disk(Queue * disk_queue, Queue * event_queue, int disk, int time){
+  
   Job * toGo = delete_head(disk_queue);
   insert_Pqueue(event_queue, toGo);
   if(disk == 1){
     DISK_1_OPEN = 0;
+    int time_at = time + get_random(DISK1_MAX, DISK1_MIN); //the time the job enter disk
+  }
+  if(disk == 2){
+    DISK_2_OPEN = 0;
+    int time_at = time + get_random(DISK2_MAX, DISK2_MIN); //the time the job enter disk
   }
   
+}
+void enter_CPU(Queue * event_queue, Job * toGo, int time){
+  int time_at = time + get_random(CPU_MAX, CPU_MIN);
+  if(time_at < FIN_TIME){
+    CPU_OPEN = 0;
+    toGo->state = 5;
+    toGo->time = time;
+    insert_Pqueue(event_queue, toGo);
+    
+  }
 }
  int main(void){
    //Read in the inputs from the inputs.txt
@@ -171,7 +202,7 @@ void enter_disk(Queue * disk_queue, Queue * event_queue, int disk, int time){
   insert_queue(CPU_queue, job1);
 
 
-  while(current_time != FIN_TIME) == 0){
+  while(current_time != FIN_TIME){
     
       Job * new_job = create_job(++ID, 5, current_time);
       insert_queue(CPU_queue, new_job);
@@ -181,7 +212,7 @@ void enter_disk(Queue * disk_queue, Queue * event_queue, int disk, int time){
       current_time++;
     
   }
-  print_queue(CPU_queue);
+  //print_queue(CPU_queue);
   
   //print_queue(CPU_queue);
   /*
