@@ -21,3 +21,6 @@ void destroy_queue(Queue * q);
 float read_inputs(char * filename, char * string);
 int get_random(int high, int low);
 void enter_disk(Queue * disk_Queue, Queue * event, int disk, int time);
+int flip_CPU();
+int flip_disk1();
+int flip_disk2();
