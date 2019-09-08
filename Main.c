@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "process_struct.h"
-
+#include <string.h>
 /*Global Variables  */
 int INIT_TIME = 0;
 int FIN_TIME = 1000;
@@ -20,7 +20,7 @@ int DISK2_MAX;
 At the beginning of the program, all are opened  */
 int CPU_OPEN = 1;
 int DISK_1_OPEN = 1;
-int DIS_2_OPEN = 1
+int DIS_2_OPEN = 1;
 
 
 //State of jobs
@@ -110,13 +110,43 @@ void destroy_queue(Queue * q){
   q->size = 0;
   free(q);
 }
+    
 //arrival, cpu_enter, cpu_finished, process_exit, disk1_start, disk1_end, disk2_start, disk2_end, ending
-int main(void){
+
+float read_inputs(char *fname, char *string){ /*This method will read and search for value coresspond to the search string and return that value*/ 
+  FILE *fp;  
+  char temp[200];         
+  char valueString[200]; 
+  float value = 0;
+  int i = 0;
+  int j = 0;
+    
+  if((fp = fopen(fname, "r")) == NULL){
+    return(0);
+  }
+  while(fgets(temp,200, fp) != NULL){
+    if((strstr(temp, string)) != NULL){
+      for(i = strlen(string); i < strlen(temp) + 1; i++){ //convert number  after the space  the search string to the end null  into number
+	valueString[j] = temp[i];
+	j++;
+      }
+      value = atof(valueString);
+      
+            
+    }
+        
+  }
+    
+  return value;
+    
+}
+ int main(void){
 
   //Create Four Main Queues Data Structures 
   Queue * CPU_queue = init_queue();
   Queue * DISK_1_queue = init_queue();
   Queue * DISK_2_queue = init_queue();
-  Quese * EventQueue = init_queue();
-  
+  Queue * EventQueue = init_queue();
+  float check = read_inputs("inputs.txt", "QUIT_PROB");
+  printf("%f\n", check);
 }
