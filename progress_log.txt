@@ -1,0 +1,7 @@
+9/1/2019 - 9/4/2019
++Implement a queue Data Structure
++Implement insert_head, delete_head, print_queue functions
++Implement destroy_queue and isEmpty methods
+9/4/2019 - Today
++Implement a read_input function which will take a text file and parse info according to the search string
+ 
