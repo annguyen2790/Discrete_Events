@@ -8,4 +8,4 @@
 9/8/2019 - Present
 +Add enter_disk, and enter_cpu to move top job to event queue
 +Start an event handling functions which place the jobs based on their state
-+Failed Test (still debugging)
++Enter_disk and enter_Cpu methods work!!
