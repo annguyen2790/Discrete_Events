@@ -152,7 +152,7 @@ int get_random(int high, int low){ //get a random in-between high and low range
   return ( rand() % (high - low + 1)) + low;
 }
 void enter_disk(Queue * disk_queue, Queue * event_queue, int disk, int time){
-  
+ 
   Job * toGo = delete_head(disk_queue);
   
   if(disk == 1){ //in DISK 1
@@ -186,7 +186,7 @@ void enter_CPU(Queue * event_queue, Job * toGo, int time){
     insert_Pqueue(event_queue, toGo);
     printf("Job%d arrive in CPU at %d and leave at %d\n", toGo->ID, time,time_at);
   }
-  insert_Pqueue(event_queue, toGo);
+  //insert_Pqueue(event_queue, toGo);
 }
 void handle_event(Job * jobs_in_events[], Queue * EVENTS_queue, Queue * DISK_1_queue, Queue * DISK_2_queue, Queue * CPU_queue, int job_amount, int current_time){
   //declare quit probability
@@ -256,10 +256,25 @@ void handle_event(Job * jobs_in_events[], Queue * EVENTS_queue, Queue * DISK_1_q
   int arrival_time = INIT_TIME;
   int current_time = INIT_TIME + get_random(ARRIVE_MAX, ARRIVE_MIN);
   Job * job1 = create_job(ID, 5, INIT_TIME); //5 since everything must start at CPU Queue
-  insert_queue(CPU_queue, job1); //add job to CPU queue
+  //insert_queue(CPU_queue, job1); //add job to CPU queue
+  Job * testJob1 = create_job(++ID, 0, 3 );
+  //enter_CPU(EVENTS_queue, testJob1, testJob1->time);
+  Job * testJob2 = create_job(++ID, 0, 4);
+  insert_queue(DISK_2_queue, testJob2 );
+  enter_disk(DISK_2_queue, EVENTS_queue, 2, testJob2->time);
+  print_queue(EVENTS_queue);
+}
 
 
-  while(current_time != FIN_TIME){
+
+
+
+
+
+
+
+
+/* while(current_time != FIN_TIME){
     
     if(arrival_time == current_time){
       Job * new_job = create_job(++ID, 5, current_time);
@@ -294,5 +309,5 @@ void handle_event(Job * jobs_in_events[], Queue * EVENTS_queue, Queue * DISK_1_q
      }
     current_time++;
   }
-  // print_queue(EVENTS_queue); 
-}
+  // print_queue(EVENTS_queue);*/
+  
