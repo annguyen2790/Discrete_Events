@@ -1,3 +1,14 @@
+#define IN_CPU_QUEUE 0
+#define IN_CPU 1
+#define IN_DISK1 2
+#define IN_DISK2 3
+#define IN_DISK1_QUEUE 4
+#define IN_DISK2_QUEUE 5
+#define CPU_QUEUE 7
+
+
+
+
 typedef struct Job{
   int ID;
   int state;
@@ -6,11 +17,11 @@ typedef struct Job{
 } Job;
 
 typedef struct Queue{
-  struct Job * head;
-  struct Job * tail;
+  Job * head;
+  Job * tail;
   int size;
 }Queue;
-  
+
 Queue * init_queue();
 void insert_queue(Queue * q, Job * event);
 void printQueue(Queue * q);
@@ -20,7 +31,5 @@ void insert_Pqueue(Queue * q, Job * event);
 void destroy_queue(Queue * q);
 float read_inputs(char * filename, char * string);
 int get_random(int high, int low);
-void enter_disk(Queue * disk_Queue, Queue * event, int disk, int time);
-int flip_CPU();
-int flip_disk1();
-int flip_disk2();
+int get_numJob(Queue * q, int num);
+
