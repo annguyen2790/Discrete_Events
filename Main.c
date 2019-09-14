@@ -128,6 +128,15 @@ void destroy_queue(Queue * q){
   q->size = 0;
   free(q);
 }
+int getnumJob(Queue *event, int time){
+  Job * temp = event->head;
+  int count = 0;
+  while(temp->time == time){
+    count++;
+    temp = temp->nextPtr;
+  }
+  return count;
+}
 
 //arrival, cpu_enter, cpu_finished, process_exit, disk1_start, disk1_end, disk2_start, disk2_end, ending
 
@@ -164,7 +173,6 @@ Job  * create_job(int job_id, int job_state, int job_time){
 int get_random(int high, int low){ //get a random in-between high and low range
   return ( rand() % (high - low + 1 + 1)) + low;
 }
-
 void enter_CPU(Job * toGo, Queue * EVENTS_queue){
   if(CPU_OPEN){
     CPU_OPEN = 0;
@@ -307,47 +315,61 @@ int main(void){
   int system_time = INIT_TIME;
   int quit_chance = 10;
   Job * first_job = create_job(ID,ARRIVAL, INIT_TIME);
+  Job * first_job1 = create_job(ID,ARRIVAL, INIT_TIME);
+  Job * first_job2 = create_job(ID,ARRIVAL, INIT_TIME);
   Job * end_job = create_job(1000,FINISH, FIN_TIME );
   //Job * cpu_job  = create_job(++ID,ARRIVE_CPU, system_time);
   //Job * disk1_job = create_job(++ID,ARRIVE_DISK, system_time);
   //Job * disk2_job= create_job(++ID,ARRIVE_DISK, system_time);
-  insert_Pqueue(EVENTS_queue, first_job);
+  insert_queue(EVENTS_queue, first_job);
+  insert_queue(EVENTS_queue, first_job1);
+  insert_queue(EVENTS_queue, first_job2);
   insert_Pqueue(EVENTS_queue, end_job);
+  int check = getnumJob(EVENTS_queue, INIT_TIME);
+  printf("%d\n", check);
   //insert_queue(CPU_queue, first_job);
   //print_queue(CPU_queue);
   //insert_queue(DISK1_queue, disk1_job);
   //insert_queue(DISK2_queue, disk2_job);
   //print_queue(DISK1_queue);
-  while(EVENTS_queue ->size && system_time < FIN_TIME){
+  
+  /* while(EVENTS_queue ->size && system_time < FIN_TIME){
     Job * temp = create_job(++ID, ARRIVAL, system_time);
     switch(temp->state){
        case(ARRIVAL):{
-	 printf("Job%d arrive at CPU at  %d\n", temp->ID, temp->time);
+	 printf("Job%d arrive at  %d\n", temp->ID, temp->time);
          insert_queue(CPU_queue, temp);
-         temp->state = ARRIVE_CPU;
-	 temp->time = system_time + get_random(ARRIVE_MAX, ARRIVE_MIN);
+	 temp->ID = ID++;
+         temp->state = ARRIVE_CPU; 
+	 temp->time = system_time + get_random(ARRIVE_MAX, ARRIVE_MIN); 
+	 printf("Job%d arrive at CPU at  %d\n", temp->ID, temp->time);
          insert_Pqueue(EVENTS_queue, temp);
        }
+	 break;
        case(ARRIVE_CPU):{
-          if(quit_chance  < QUIT_PROB*10){
+	 if(quit_chance < QUIT_PROB * 50){ //10% to quit
 	   printf("Job%d exit the CPU at time %d\n ", temp->ID, temp->time);
 	   temp->state = FINISH_CPU;
           }else{ //enter disk
+	   temp->time += get_random(DISK1_MAX, DISK1_MIN);
 	   printf("Job%d arrive at disk at  %d\n", temp->ID, temp->time);
 	   temp->state = ARRIVE_DISK;
 	   insert_queue(DISK1_queue, temp);
- 	   temp->time = system_time + get_random(DISK1_MAX, DISK1_MIN);
+ 	   
 	  }
        }
+	 break;
         case(ARRIVE_DISK):{
 	  printf("Job%d finish at disk at  %d\n", temp->ID, temp->time);
 	  temp->state = FINISH_DISK1;
 	  temp->time = system_time + get_random(DISK1_MAX, DISK2_MAX);
         }
+	  break;
         case(FINISH_DISK1):{
 	  temp->state = ARRIVE_CPU;
 	  temp->time = system_time + get_random(DISK1_MAX, DISK2_MAX);
         }
+	  break;
         default:
           break;
       
@@ -355,7 +377,7 @@ int main(void){
     }
     system_time = temp->time;
  
-  }    
+    }*/    
   // print_queue(CPU_queue);
 
 
