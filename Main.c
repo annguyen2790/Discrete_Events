@@ -70,20 +70,21 @@ void insert_Pqueue(Queue * q, Job * event){ /*This method insert Job in a queue 
 
 }
 void insert_queue(Queue * q, Job * event){ /*This method insert a Job at the tail of the queue*/
-  q->size++;
+  
   Job * temp = malloc(sizeof(Job));
   temp->ID = event->ID;
   temp->state = event->state;
   temp->time = event->time;
   temp->nextPtr = NULL;
 
-  if(q->head == NULL){
-    q->head = temp;
+  if(q->head == NULL && q->tail == NULL){
+    q->head = q->tail =  temp;
 
   }else{
     q->tail->nextPtr = temp;
     q->tail = temp;
   }
+  q->size++;
 }
 Job * delete_head(Queue * q){ /*Return reference to to head Job that popped*/
   if(isEmpty(q)){
@@ -114,6 +115,11 @@ void print_queue(Queue *  q){ /*This methof is just used to test if queue is wor
   printf("NULL\n");
   printf("Size: %d\n", q->size);
 
+}
+void print_job(Job * toPrint){
+    printf("ID:%d ", toPrint->ID);
+    printf("State:%d ", toPrint->state);
+    printf("Time:%d", toPrint->time);
 }
 int isEmpty(Queue * q){ /*This method checks if the queue is empty; 1 for yes and 0 for no */
   return q->head == NULL && q->size == 0;
@@ -299,7 +305,7 @@ int main(void){
   srand(SEED);// randomize
   int ID = 0;
   int system_time = INIT_TIME;
-
+  int quit_chance = 10;
   Job * first_job = create_job(ID,ARRIVAL, INIT_TIME);
   Job * end_job = create_job(1000,FINISH, FIN_TIME );
   //Job * cpu_job  = create_job(++ID,ARRIVE_CPU, system_time);
@@ -307,14 +313,57 @@ int main(void){
   //Job * disk2_job= create_job(++ID,ARRIVE_DISK, system_time);
   insert_Pqueue(EVENTS_queue, first_job);
   insert_Pqueue(EVENTS_queue, end_job);
+  //insert_queue(CPU_queue, first_job);
+  //print_queue(CPU_queue);
   //insert_queue(DISK1_queue, disk1_job);
   //insert_queue(DISK2_queue, disk2_job);
   //print_queue(DISK1_queue);
-  while(system_time < FIN_TIME){
-    Job * temp = delete_head(EVENTS_queue);
+  while(EVENTS_queue ->size && system_time < FIN_TIME){
+    Job * temp = create_job(++ID, ARRIVAL, system_time);
+    switch(temp->state){
+       case(ARRIVAL):{
+	 printf("Job%d arrive at CPU at  %d\n", temp->ID, temp->time);
+         insert_queue(CPU_queue, temp);
+         temp->state = ARRIVE_CPU;
+	 temp->time = system_time + get_random(ARRIVE_MAX, ARRIVE_MIN);
+         insert_Pqueue(EVENTS_queue, temp);
+       }
+       case(ARRIVE_CPU):{
+          if(quit_chance  < QUIT_PROB*10){
+	   printf("Job%d exit the CPU at time %d\n ", temp->ID, temp->time);
+	   temp->state = FINISH_CPU;
+          }else{ //enter disk
+	   printf("Job%d arrive at disk at  %d\n", temp->ID, temp->time);
+	   temp->state = ARRIVE_DISK;
+	   insert_queue(DISK1_queue, temp);
+ 	   temp->time = system_time + get_random(DISK1_MAX, DISK1_MIN);
+	  }
+       }
+        case(ARRIVE_DISK):{
+	  printf("Job%d finish at disk at  %d\n", temp->ID, temp->time);
+	  temp->state = FINISH_DISK1;
+	  temp->time = system_time + get_random(DISK1_MAX, DISK2_MAX);
+        }
+        case(FINISH_DISK1):{
+	  temp->state = ARRIVE_CPU;
+	  temp->time = system_time + get_random(DISK1_MAX, DISK2_MAX);
+        }
+        default:
+          break;
+      
+      
+    }
     system_time = temp->time;
-    event_handler(temp, EVENTS_queue, DISK1_queue, DISK2_queue, CPU_queue, system_time);
-  }
+ 
+  }    
+  // print_queue(CPU_queue);
+
+
+
+
+
+
+   
 
 }
 
@@ -322,11 +371,12 @@ int main(void){
 //printf("CHEKC: %d\n", system_time);
 
 
+// PRINT_QUEUE(CPU_QUEUE);
 
 
 
 
-
+//printf("CHEKC: %d\n", system_time);
 
 
 
