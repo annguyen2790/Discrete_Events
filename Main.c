@@ -240,27 +240,35 @@ int main(void){
   Job * begin = create_job(ID,ARRIVAL, system_time);
   Job * end = create_job(1000, FINISH, FIN_TIME);
   insert_queue(EVENTS_queue, begin);
-  insert_Pqueue(EVENTS_queue, end);  
+  insert_Pqueue(EVENTS_queue, end);
+  //FILES TO WRITE
+  FILE * fp;
+  fp = fopen("outputs.txt", "w+");
+  char string_buffer[200];
   //BIG YOSHI LOOP
   while(system_time < FIN_TIME && EVENTS_queue->size){
     Job * temp = create_job(++ID, ARRIVAL, system_time);
     switch(temp->state){
       case(ARRIVAL):{
 	printf("Job%d arrive at  %d\n", temp->ID, temp->time);
+	fprintf(fp,"Job%d arrive at  %d\n", temp->ID, temp->time);
 	insert_queue(CPU_queue, temp);
 	temp->ID = ID++;
 	temp->state = ARRIVE_CPU;
 	temp->time = system_time + get_random(ARRIVE_MAX, ARRIVE_MIN);
 	printf("Job%d arrive at CPU at  %d\n", temp->ID, temp->time);
+	fprintf(fp,"Job%d arrive at CPU at  %d\n", temp->ID, temp->time );
 	insert_Pqueue(EVENTS_queue, temp);
       }
       case(ARRIVE_CPU):{
 	if(quit_chance < QUIT_PROB * 50){ //10% to quit
 	  printf("Job%d exit the CPU at time %d\n ", temp->ID, temp->time);
+	  fprintf(fp,"Job%d exit the CPU at time %d\n ", temp->ID, temp->time );
 	  temp->state = FINISH_CPU;
 	}else{ //enter disk
 	  temp->time += get_random(DISK1_MAX, DISK1_MIN);
 	  printf("Job%d arrive at disk at  %d\n", temp->ID, temp->time);
+	  fprintf(fp,"Job%d arrive at disk at  %d\n", temp->ID, temp->time);
 	  temp->state = ARRIVE_DISK;
 	  insert_queue(DISK1_queue, temp);
 	}
@@ -270,31 +278,30 @@ int main(void){
 	int dice_roll = get_random(1, 6);
 	if(dice_roll < 4){
 	  printf("Job%d finish at disk 1 at  %d\n", temp->ID, temp->time);
+	  fprintf(fp,"Job%d finish at disk 1 at  %d\n", temp->ID, temp->time);
 	  temp->state = FINISH_DISK1;
 	  temp->time = system_time + get_random(DISK1_MAX, DISK1_MIN);
 	}else{
 	  printf("Job%d finish at disk 2  at  %d\n", temp->ID, temp->time);
+	  fprintf(fp,"Job%d finish at disk 2 at  %d\n", temp->ID, temp->time);
 	  temp->state = FINISH_DISK2;
 	  temp->time = system_time + get_random(DISK2_MAX, DISK2_MIN);
 	  
 	}
-	
-	
       }
       case(FINISH_DISK1):{
 	temp->state = ARRIVE_CPU;
 	temp->time = system_time + get_random(DISK1_MAX, DISK2_MAX);
-      }
 	break;
+      }
+	
+       
       default:
 	break;
 
     }
     system_time++;
-  }
-    
-
-    
+  }     
     
 }
   
