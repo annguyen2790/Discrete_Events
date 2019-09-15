@@ -244,7 +244,7 @@ int main(void){
   //FILES TO WRITE
   FILE * fp;
   fp = fopen("outputs.txt", "w+");
-  char string_buffer[200];
+  
   //BIG YOSHI LOOP
   while(system_time < FIN_TIME && EVENTS_queue->size){
     Job * temp = create_job(++ID, ARRIVAL, system_time);
